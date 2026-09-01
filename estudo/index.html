@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diário de Estudos</title>
+<meta name="description" content="Cadastre seus campos de estudo, cronometre sessões de foco e registre o que você estudou.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23C4772E'/%3E%3Cpath d='M9 21c0-7 4-11 11-12-1 7-4 11-11 12Z' fill='%23FBFBF7'/%3E%3Cpath d='M9 21c2-4 5-7 9-9' stroke='%233F7D6B' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>Diário de Estudos</h1>
+        <p class="today" id="todayLabel">—</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">
+      <span id="themeToggleLabel">Sistema</span>
+    </button>
+  </header>
+
+  <section class="stats" aria-label="Resumo do progresso">
+    <div class="stat-tile">
+      <span class="stat-label">Hoje</span>
+      <span class="stat-value" id="statToday">0min</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-label">Últimos 7 dias</span>
+      <span class="stat-value" id="statWeek">0min</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-label">Sequência</span>
+      <span class="stat-value" id="statStreak">0 dias</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-label">Campo em destaque</span>
+      <span class="stat-value stat-value--field" id="statTopField">—</span>
+    </div>
+  </section>
+
+  <div class="main-grid">
+
+    <section class="card timer-card" aria-label="Cronômetro de foco">
+      <h2>Sessão de foco</h2>
+
+      <div class="timer-body">
+        <div class="timer-ring-wrap">
+          <svg class="timer-ring" viewBox="0 0 200 200" aria-hidden="true">
+            <circle class="ring-track" cx="100" cy="100" r="88"></circle>
+            <circle class="ring-progress" id="ringProgress" cx="100" cy="100" r="88"></circle>
+          </svg>
+          <div class="timer-readout">
+            <span class="timer-clock" id="timerClock">00:00</span>
+            <span class="timer-sub" id="timerSub">selecione um campo</span>
+          </div>
+        </div>
+
+        <div class="timer-controls">
+          <label class="field-label" for="timerField">Campo</label>
+          <select id="timerField" class="select"></select>
+
+          <label class="field-label">Duração alvo</label>
+          <div class="chip-row" id="presetChips">
+            <button type="button" class="chip" data-min="15">15 min</button>
+            <button type="button" class="chip" data-min="25">25 min</button>
+            <button type="button" class="chip" data-min="45">45 min</button>
+            <button type="button" class="chip" data-min="60">60 min</button>
+            <button type="button" class="chip" data-min="0">Livre</button>
+          </div>
+
+          <div class="timer-buttons">
+            <button type="button" class="btn btn-primary" id="timerStart">Iniciar foco</button>
+            <button type="button" class="btn btn-ghost" id="timerReset">Zerar</button>
+          </div>
+
+          <div class="timer-save" id="timerSaveBox" hidden>
+            <p>Sessão pausada — quer registrar no seu diário?</p>
+            <button type="button" class="btn btn-primary" id="timerSaveBtn">Registrar esta sessão</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card fields-card" aria-label="Campos de estudo">
+      <h2>Meus campos de estudo</h2>
+      <p class="hint">Cadastre as matérias, temas ou disciplinas que você estuda.</p>
+
+      <ul class="field-list" id="fieldList"></ul>
+
+      <form class="field-form" id="fieldForm">
+        <label class="field-label" for="fieldNameInput">Novo campo</label>
+        <div class="field-form-row">
+          <input type="text" id="fieldNameInput" class="input" placeholder="ex.: Inglês, Cálculo, Direito Civil" maxlength="40" required>
+          <button type="submit" class="btn btn-primary btn-compact">Adicionar</button>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+  <section class="card log-card" aria-label="Registrar sessão de estudo">
+    <h2>Registrar sessão</h2>
+    <form class="log-form" id="logForm">
+      <div class="log-form-grid">
+        <div class="form-group">
+          <label class="field-label" for="logField">Campo</label>
+          <select id="logField" class="select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="field-label" for="logDate">Data</label>
+          <input type="date" id="logDate" class="input" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label" for="logStart">Horário de início</label>
+          <input type="time" id="logStart" class="input" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label" for="logDuration">Duração (min)</label>
+          <input type="number" id="logDuration" class="input" min="1" max="960" step="1" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="logNotes">O que você estudou</label>
+        <textarea id="logNotes" class="input textarea" rows="2" placeholder="Anotações da sessão (opcional)"></textarea>
+      </div>
+      <div class="log-form-footer">
+        <span class="log-end-preview" id="logEndPreview"></span>
+        <button type="submit" class="btn btn-primary">Salvar sessão</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card history-card" aria-label="Histórico de sessões">
+    <div class="history-head">
+      <h2>Histórico</h2>
+      <div class="chip-row" id="historyFilters"></div>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
